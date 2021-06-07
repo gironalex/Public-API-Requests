@@ -23,6 +23,10 @@ searchContainerDOM.insertAdjacentHTML('beforeend', searchMarkup);
 //----------------
 // GALLERY MARKUP
 //----------------
+/**
+ * Creates a HTML profile card from a given object array.
+ * @param1 [responseArray] - Object array that contains the contact information of the 12 fetched profiles.
+**/
 function createProfiles(responseArray) {
     responseArray.forEach(profile => {
         let htmlGalleryMessage = `
@@ -44,12 +48,18 @@ function createProfiles(responseArray) {
 //--------------
 // MODAL MARKUP
 //--------------
+/**
+ * Creates a "pop up" window with more information on the profile card the user has clicked.
+ * @param1 [selectedCardName] - string value given by an event listener when the user clicks on the profile card.
+ * @param2 [responseArray] - Object array that contains the contact information of the 12 fetched profiles.
+**/
 function createProfileExtension(selectedCardName, responseArray) {
     // Finding the index value of the selected card
     const responseArrayNames = [];
     responseArray.forEach(profile => responseArrayNames.push(`${profile.name.first} ${profile.name.last}`));
     const indexOfSld = responseArrayNames.findIndex(name => name === selectedCardName);
     
+    // Variables that contain the contact information to be used in the Modal Markup
     let imgSrc = responseArray[indexOfSld].picture.large;
     let firstName = responseArray[indexOfSld].name.first;
     let lastName = responseArray[indexOfSld].name.last;
@@ -114,6 +124,11 @@ function createProfileExtension(selectedCardName, responseArray) {
 //--------------------------------
 // FETCHING DATA + DISPLAYING DATA
 //--------------------------------
+/**
+ * "fetches" API information on 12 US profiles from an URL link. 
+ * @param1 [url] - API url where the information is being requested from.
+ * @return [] - returns an array with the objects of 12 different contact profiles.
+**/
 async function fetchData(url) {
         let response = await fetch(url);
         let data = await response.json();
@@ -130,9 +145,15 @@ fetchData(url)
     .catch(error => console.log(error))
 
 
-//----------
-// FILTERING
-//----------
+//-------------------
+// FILTERING PROFILES
+//-------------------
+/**
+ * Searches to see if any of the input name values in the search bar are included in the array returned by the fetch request.
+ * @param1 [searchInput] - input value from the search bar.
+ * @param2 [data] - array of the 12 profiles that were fetched.
+ * @returns [matchedProfiles] - array with the values that match in the search bar & fetched response.
+**/
 function filter(searchInput, data) {
     let matchedProfiles = [];
     data.forEach(profile => {
@@ -142,6 +163,10 @@ function filter(searchInput, data) {
     return matchedProfiles
 }
 
+/**
+ * Creates a HTML profile using the createProfiles function with the array returned from the filter function. 
+ * @param1 [matchedEmployees] - Object array that contains the returned values from the filter function
+**/
 function createFilteredProfiles (matchedEmployees) {
     if (matchedEmployees.length === 0) {
         headerTextDOM.innerHTML = `<h1>No results found!</h1>`;
