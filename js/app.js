@@ -44,32 +44,71 @@ function createProfiles(responseArray) {
 //--------------
 // MODAL MARKUP
 //--------------
-function createProfileExtension(selectedCard, responseArray) {
+function createProfileExtension(selectedCardName, responseArray) {
+    // Finding the index value of the selected card
+    const responseArrayNames = [];
+    responseArray.forEach(profile => responseArrayNames.push(`${profile.name.first} ${profile.name.last}`));
+    const indexOfSld = responseArrayNames.findIndex(name => name === selectedCardName);
     
+    let imgSrc = responseArray[indexOfSld].picture.large;
+    let firstName = responseArray[indexOfSld].name.first;
+    let lastName = responseArray[indexOfSld].name.last;
+    let email = responseArray[indexOfSld].email;
+    let city = responseArray[indexOfSld].location.city;
+    let cell = responseArray[indexOfSld].cell.replace('-', ' ');
+    let streetNumber = responseArray[indexOfSld].location.street.number;
+    let streetName = responseArray[indexOfSld].location.street.name;
+    let state = responseArray[indexOfSld].location.state;
+    let postCode = responseArray[indexOfSld].location.postcode;
+    let month = responseArray[indexOfSld].dob.date.slice(5,7);
+    let day = responseArray[indexOfSld].dob.date.slice(8,10);
+    let year = responseArray[indexOfSld].dob.date.slice(0,4);
+
+    // Modal Markup
     const htmlModalMessage = `
         <div class="modal-container">
             <div class="modal">
                 <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
                 <div class="modal-info-container">
-                    <img class="modal-img" src="https://placehold.it/125x125" alt="profile picture">
-                    <h3 id="name" class="modal-name cap">name</h3>
-                    <p class="modal-text">email</p>
-                    <p class="modal-text cap">city</p>
+                    <img class="modal-img" src="${imgSrc}" alt="profile picture">
+                    <h3 id="name" class="modal-name cap">${firstName} ${lastName}</h3>
+                    <p class="modal-text">${email}</p>
+                    <p class="modal-text cap">${city}</p>
                     <hr>
-                    <p class="modal-text">(555) 555-5555</p>
-                    <p class="modal-text">123 Portland Ave., Portland, OR 97204</p>
-                    <p class="modal-text">Birthday: 10/21/2015</p>
+                    <p class="modal-text">${cell}</p>
+                    <p class="modal-text">${streetNumber} ${streetName}., ${city}, ${state} ${postCode}</p>
+                    <p class="modal-text">Birthday: ${month} / ${day} / ${year}</p>
                 </div>
              </div>
 
-            // IMPORTANT: Below is only for exceeds tasks 
             <div class="modal-btn-container">
                 <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
                 <button type="button" id="modal-next" class="modal-next btn">Next</button>
             </div>
         </div>
         `;
+        
     bodyDOM.insertAdjacentHTML('beforeend', htmlModalMessage);
+
+    // Event Listeners for the Modal Window X, Prev, & Next Buttons
+    document.querySelector('.modal-container').addEventListener('click', (e) => {
+
+        if (e.target.closest('.modal-close-btn')) {
+            e.currentTarget.remove();
+        } else if (e.target.id === 'modal-prev') {
+            if (indexOfSld !== 0)  {
+                let x = responseArrayNames[indexOfSld-1];
+                console.log(x);
+                createProfileExtension(x, profilesArray);
+            } 
+        } else if (e.target.id === 'modal-next') {
+            if (indexOfSld !== 11) {
+                let y = responseArrayNames[indexOfSld+1];
+                console.log(y);
+                createProfileExtension(y, profilesArray);
+            } 
+          }
+    })
 }
 
 //--------------------------------
@@ -132,7 +171,9 @@ document.querySelector('#search-submit').addEventListener('click', () => {
 });
 
 // Clicking on Profile Cards
-const profileCards = document.querySelector('.gallery');
-profileCards.addEventListener('click', (e) => {
-    console.log(e.target.closest('.card'));
+galleryDOM.addEventListener('click', (e) => {
+    let nameSelected;
+    let cardSelected = e.target.closest('.card');
+    cardSelected !== null ? nameSelected = cardSelected.querySelector('.card-info-container h3').innerHTML : nameSelected = null;
+    nameSelected !== null ? createProfileExtension(nameSelected, profilesArray) : null;
 })
