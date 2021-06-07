@@ -57,22 +57,22 @@ function createProfileExtension(selectedCardName, responseArray) {
     // Finding the index value of the selected card
     const responseArrayNames = [];
     responseArray.forEach(profile => responseArrayNames.push(`${profile.name.first} ${profile.name.last}`));
-    const indexOfSld = responseArrayNames.findIndex(name => name === selectedCardName);
+    const index = responseArrayNames.findIndex(name => name === selectedCardName);
     
     // Variables that contain the contact information to be used in the Modal Markup
-    let imgSrc = responseArray[indexOfSld].picture.large;
-    let firstName = responseArray[indexOfSld].name.first;
-    let lastName = responseArray[indexOfSld].name.last;
-    let email = responseArray[indexOfSld].email;
-    let city = responseArray[indexOfSld].location.city;
-    let cell = responseArray[indexOfSld].cell.replace('-', ' ');
-    let streetNumber = responseArray[indexOfSld].location.street.number;
-    let streetName = responseArray[indexOfSld].location.street.name;
-    let state = responseArray[indexOfSld].location.state;
-    let postCode = responseArray[indexOfSld].location.postcode;
-    let month = responseArray[indexOfSld].dob.date.slice(5,7);
-    let day = responseArray[indexOfSld].dob.date.slice(8,10);
-    let year = responseArray[indexOfSld].dob.date.slice(0,4);
+    let imgSrc = responseArray[index].picture.large;
+    let firstName = responseArray[index].name.first;
+    let lastName = responseArray[index].name.last;
+    let email = responseArray[index].email;
+    let city = responseArray[index].location.city;
+    let cell = responseArray[index].cell.replace('-', ' ');
+    let streetNumber = responseArray[index].location.street.number;
+    let streetName = responseArray[index].location.street.name;
+    let state = responseArray[index].location.state;
+    let postCode = responseArray[index].location.postcode;
+    let month = responseArray[index].dob.date.slice(5,7);
+    let day = responseArray[index].dob.date.slice(8,10);
+    let year = responseArray[index].dob.date.slice(0,4);
 
     // Modal Markup
     const htmlModalMessage = `
@@ -98,7 +98,7 @@ function createProfileExtension(selectedCardName, responseArray) {
         </div>
         `;
         
-    bodyDOM.insertAdjacentHTML('beforeend', htmlModalMessage);
+    galleryDOM.insertAdjacentHTML('afterend', htmlModalMessage);
 
     // Event Listeners for the Modal Window X, Prev, & Next Buttons
     document.querySelector('.modal-container').addEventListener('click', (e) => {
@@ -106,18 +106,16 @@ function createProfileExtension(selectedCardName, responseArray) {
         if (e.target.closest('.modal-close-btn')) {
             e.currentTarget.remove();
         } else if (e.target.id === 'modal-prev') {
-            if (indexOfSld !== 0)  {
-                let x = responseArrayNames[indexOfSld-1];
-                console.log(x);
-                createProfileExtension(x, profilesArray);
+            if (index !== 0)  {
+                e.currentTarget.remove();
+                createProfileExtension(responseArrayNames[index-1], profilesArray);
             } 
         } else if (e.target.id === 'modal-next') {
-            if (indexOfSld !== 11) {
-                let y = responseArrayNames[indexOfSld+1];
-                console.log(y);
-                createProfileExtension(y, profilesArray);
+            if (index !== 11) {
+                e.currentTarget.remove();
+                createProfileExtension(responseArrayNames[index+1], profilesArray);
             } 
-          }
+        }
     })
 }
 
@@ -143,7 +141,6 @@ fetchData(url)
         headerTextDOM.innerHTML = `<h1>AWESOME STARTUP EMPLOYEE DIRECTORY</h1>`;
     })
     .catch(error => console.log(error))
-
 
 //-------------------
 // FILTERING PROFILES
