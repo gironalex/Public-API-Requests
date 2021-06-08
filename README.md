@@ -13,3 +13,4 @@ Extra Functionalities:
 CSS Styling
 1. The employee cards will display a blue box shadow when the user hovers the contact card.
 2. The search bar and search button will change to a blue border hue when the user hovers over it.
+3. In the modal window, the X, Prev, & Next buttons will change their background color from blue to white.
